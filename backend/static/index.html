@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Smart Vision Monitor</title>
+  <style>
+    :root{font-family:Inter,system-ui,sans-serif;color:#e8eef5;background:#08131f}body{margin:0}
+    header{padding:28px 6vw;background:#0e2031;border-bottom:1px solid #1d405c}main{padding:28px 6vw}
+    h1{margin:0 0 6px;color:#58d6b2}.notice{color:#9eb4c7}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}
+    .card,.events{background:#10283a;border:1px solid #1c4761;border-radius:14px;padding:18px}.value{font-size:2rem;color:#fff}
+    table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;border-bottom:1px solid #24445a}th{color:#58d6b2}
+    .live{display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff6b6b;margin-right:8px}@media(max-width:700px){.cards{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header><h1>Smart Vision Monitor</h1><div class="notice">Assistive monitoring prototype — human supervision remains essential.</div></header>
+  <main>
+    <div class="cards"><div class="card">Connection<div class="value" id="connection">Connecting</div></div><div class="card">Events<div class="value" id="total">0</div></div><div class="card">Latest alert<div class="value" id="latest">—</div></div></div>
+    <section class="events"><h2><span class="live"></span>Real-time events</h2><table><thead><tr><th>Time</th><th>Event</th><th>Track</th><th>Zone</th></tr></thead><tbody id="rows"></tbody></table></section>
+  </main>
+  <script>
+    const rows=document.querySelector('#rows'),total=document.querySelector('#total'),latest=document.querySelector('#latest'),statusEl=document.querySelector('#connection');let count=0;
+    function add(e){count++;total.textContent=count;latest.textContent=e.type;const tr=document.createElement('tr');for(const value of [new Date(e.timestamp).toLocaleTimeString(),e.type,e.track_id,e.zone??'—']){const td=document.createElement('td');td.textContent=String(value);tr.append(td)}rows.prepend(tr);while(rows.children.length>30)rows.lastChild.remove()}
+    fetch('/api/events?limit=30').then(r=>r.json()).then(events=>events.reverse().forEach(add)).catch(()=>statusEl.textContent='History unavailable');
+    const ws=new WebSocket(`${location.protocol==='https:'?'wss':'ws'}://${location.host}/ws/events`);ws.onopen=()=>statusEl.textContent='Live';ws.onmessage=m=>add(JSON.parse(m.data));ws.onclose=()=>statusEl.textContent='Offline';
+  </script>
+</body></html>
+

@@ -1,0 +1,29 @@
+app:
+  name: Smart Vision Monitor
+  source: 0                 # 0 = webcam; or use a video path
+  display_width: 960
+  save_video: false
+  output_video: data/annotated_output.mp4
+
+model:
+  weights: yolov8n.pt
+  confidence: 0.45
+  tracker: bytetrack.yaml
+  device: cpu              # use 0 for the first NVIDIA GPU
+
+monitoring:
+  high_motion_pixels: 90
+  high_motion_cooldown_seconds: 3
+  trail_length: 30
+  event_log: data/events.jsonl
+  store_frames: false      # privacy-first default
+
+# Normalized coordinates: [x1, y1, x2, y2], values from 0 to 1.
+zones:
+  - name: PLAY_AREA
+    rect: [0.08, 0.18, 0.48, 0.88]
+    color: [46, 204, 113]
+  - name: RESTRICTED_AREA
+    rect: [0.62, 0.15, 0.94, 0.82]
+    color: [52, 152, 219]
+
