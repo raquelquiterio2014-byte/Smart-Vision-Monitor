@@ -99,7 +99,11 @@ Six automated tests passed locally: zone boundaries, health/dashboard routes, mi
 
 The desktop rejects starting another session while its worker is active and releases the capture in a finally block. After pressing Stop, wait for Stopped before starting again. The dashboard uses text nodes for event fields. The API skips malformed records and waits for complete WebSocket records instead of failing on a partial write.
 
-Webcam capture, actual YOLO/ByteTrack inference, GPU operation, desktop layout and a clean installation of the full vision stack were **not tested** in this revision.
+### Owner-reported local validation
+
+On October 9, 2026, Raquel Cruz confirmed successful local execution using a **video file**. This is owner-reported validation; no screenshots, runtime logs, metrics or tested commit identifier were supplied for this check. It does not establish that the newly published revision was rerun.
+
+Webcam capture, GPU operation, a manual check of the FastAPI dashboard and a clean installation of the full vision stack remain unconfirmed. The automated checks above do not exercise actual YOLO/ByteTrack inference or the desktop layout.
 
 ## Current implementation limits
 
